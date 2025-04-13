@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FocusPal Interface v2.1</title>
+  <!-- Sci-Fi Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    /* ---------- Base Styles & Sci-Fi Theme ---------- */
+    :root {
+      --bg-primary: #0a0f1a; /* Deep space blue/black */
+      --bg-secondary: #1a202c; /* Darker card background */
+      --text-primary: #e2e8f0; /* Light grey/white text */
+      --text-secondary: #a0aec0; /* Muted text */
+      --accent-primary: #00ffff; /* Cyan accent */
+      --accent-secondary: #38b2ac; /* Teal accent */
+      --glow-color: rgba(0, 255, 255, 0.5); /* Cyan glow */
+      --border-color: #2d3748; /* Dark border */
+      --font-heading: 'Orbitron', sans-serif;
+      --font-body: 'Share Tech Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      padding: 20px;
+      transition: background 0.5s ease, color 0.5s ease;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 0 15px var(--glow-color);
+      padding: 20px;
+      background: rgba(10, 15, 26, 0.8); /* Slightly transparent background */
+      backdrop-filter: blur(5px); /* Frosted glass effect */
+    }
+
+    h1, h2, h3 {
+      font-family: var(--font-heading);
+      color: var(--accent-primary);
+      margin-bottom: 20px;
+      text-align: center;
+      text-shadow: 0 0 8px var(--glow-color);
+    }
+    h1 { font-size: 2.5em; }
+    h2 { font-size: 1.8em; }
+    h3 { font-size: 1.4em; color: var(--accent-secondary); }
+
+    /* ---------- Quote Display ---------- */
+    #quote-display {
+        font-family: var(--font-heading);
+        font-size: 1.5em;
+        text-align: center;
+        color: var(--accent-secondary);
+        margin: 30px auto;
+        padding: 15px;
+        border: 1px dashed var(--border-color);
+        max-width: 80%;
+        min-height: 60px; /* Ensure space even if quote is short */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-shadow: 0 0 5px rgba(56, 178, 172, 0.6);
+        animation: fadeInQuote 1.5s ease-in-out;
+    }
+
+    @keyframes fadeInQuote {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+
+    /* ---------- Tab Navigation ---------- */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      gap: 10px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 15px;
+    }
+
+    .tab-button {
+      padding: 10px 20px;
+      border: 1px solid var(--accent-primary);
+      background: transparent;
+      color: var(--accent-primary);
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-weight: bold;
+      transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .tab-button:hover {
+      background: var(--accent-primary);
+      color: var(--bg-primary);
+      box-shadow: 0 0 10px var(--glow-color);
+    }
+
+    .tab-button.active {
+      background: var(--accent-primary);
+      color: var(--bg-primary);
+      box-shadow: 0 0 15px var(--glow-color);
+      border-color: var(--accent-primary);
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadein 0.8s ease-in-out;
+      border-top: 1px solid var(--border-color);
+      padding-top: 20px;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadein {
+      from { opacity: 0; transform: scale(0.98); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* ---------- Card Style ---------- */
+    .card {
+      background: var(--bg-secondary);
+      padding: 25px;
+      margin: 25px auto;
+      border: 1px solid var(--border-color);
+      box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.5), 0 0 5px rgba(0, 255, 255, 0.1);
+      max-width: 950px;
+      border-radius: 0; /* Sharp corners */
+    }
+
+    /* ---------- Form Elements ---------- */
+    label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--text-secondary);
+        font-size: 0.9em;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0 18px 0;
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 1em;
+      border-radius: 0;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    textarea:focus,
+    select:focus {
+        outline: none;
+        border-color: var(--accent-primary);
+        box-shadow: 0 0 8px var(--glow-color);
+    }
+    textarea {
+        line-height: 1.5;
+    }
+    select {
+        appearance: none; /* Custom dropdown arrow maybe? For now, remove default */
+        background-image: url('data:image/svg+xml;utf8,<svg fill="%2300ffff" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 20px;
+        padding-right: 40px; /* Space for arrow */
+    }
+    option {
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+    }
+
+    button {
+      padding: 10px 20px;
+      border: 1px solid var(--accent-primary);
+      border-radius: 0;
+      background: var(--accent-primary);
+      color: var(--bg-primary);
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-weight: bold;
+      margin: 5px;
+      transition: background 0.3s, color 0.3s, transform 0.2s, box-shadow 0.3s;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    button:hover {
+      background: transparent;
+      color: var(--accent-primary);
+      transform: scale(1.05);
+      box-shadow: 0 0 12px var(--glow-color);
+    }
+    button:active {
+        transform: scale(0.98);
+    }
+
+    /* Specific button styles */
+    button[onclick^="delete"], button[onclick*="clear"] {
+        border-color: #e53e3e; /* Red for destructive actions */
+        background: #e53e3e;
+        color: var(--text-primary);
+    }
+    button[onclick^="delete"]:hover, button[onclick*="clear"]:hover {
+        background: transparent;
+        color: #e53e3e;
+        box-shadow: 0 0 12px rgba(229, 62, 62, 0.6);
+    }
+
+
+    /* ---------- Progress Bar ---------- */
+    progress {
+      width: 100%;
+      height: 15px;
+      margin-top: 12px;
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-primary);
+      appearance: none; /* Needed to style */
+      border-radius: 0;
+    }
+    /* Webkit browsers (Chrome, Safari) */
+    progress::-webkit-progress-bar {
+      background-color: var(--bg-primary);
+      border-radius: 0;
+    }
+    progress::-webkit-progress-value {
+      background: linear-gradient(90deg, var(--accent-secondary), var(--accent-primary));
+      border-radius: 0;
+      box-shadow: 0 0 5px var(--glow-color);
+      transition: width 0.5s ease;
+    }
+    /* Firefox */
+    progress::-moz-progress-bar {
+      background: linear-gradient(90deg, var(--accent-secondary), var(--accent-primary));
+      border-radius: 0;
+      box-shadow: 0 0 5px var(--glow-color);
+      transition: width 0.5s ease;
+    }
+    p {
+        color: var(--text-secondary);
+        font-size: 0.9em;
+    }
+    p span {
+        color: var(--accent-primary);
+        font-weight: bold;
+    }
+
+    /* ---------- Table Styles ---------- */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 0.95em;
+      border: 1px solid var(--border-color);
+    }
+    th, td {
+      padding: 12px 10px;
+      border: 1px solid var(--border-color);
+      text-align: left;
+      vertical-align: middle;
+    }
+    th {
+      background: rgba(0, 255, 255, 0.1); /* Faint cyan header */
+      color: var(--accent-primary);
+      font-family: var(--font-heading);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 0.9em;
+      text-align: center;
+    }
+    td {
+        color: var(--text-secondary);
+    }
+    tr:nth-child(even) {
+        background-color: rgba(45, 55, 72, 0.2); /* Slightly different row color */
+    }
+    td input[type="checkbox"] {
+        width: auto; /* Override default width */
+        margin: 0 auto;
+        display: block;
+        accent-color: var(--accent-primary); /* Style checkbox color */
+        transform: scale(1.2);
+    }
+    td button {
+        padding: 5px 10px;
+        font-size: 0.8em;
+    }
+
+    /* ---------- Calendar & Graph ---------- */
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      margin-top: 20px;
+    }
+    .calendar-grid div {
+      border: 1px solid var(--border-color);
+      padding: 12px 8px;
+      background: var(--bg-primary);
+      text-align: center;
+      font-size: 0.9em;
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+    .calendar-grid div strong {
+        display: block;
+        font-size: 1.2em;
+        color: var(--accent-primary);
+        margin-bottom: 5px;
+    }
+    .calendar-grid div:hover {
+        background: var(--bg-secondary);
+        box-shadow: 0 0 8px var(--glow-color);
+    }
+
+    canvas {
+      max-width: 100%;
+      display: block;
+      margin: 25px auto;
+      border: 1px solid var(--border-color);
+      background: rgba(10, 15, 26, 0.5);
+    }
+
+    /* ---------- To-Do List Styles (Integrated into table now) ---------- */
+    /* No specific .todo-item needed as it's in the table */
+
+    /* ---------- Daily 10-Point Progress Check ---------- */
+    .points-container {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 15px;
+      margin-bottom: 15px;
+    }
+    .point {
+      width: 25px;
+      height: 25px;
+      border: 2px solid var(--accent-primary);
+      cursor: pointer;
+      transition: background 0.3s, box-shadow 0.3s;
+      position: relative; /* For potential pseudo-elements */
+    }
+    .point:hover {
+        box-shadow: 0 0 8px var(--glow-color);
+    }
+    .point.active {
+      background: var(--accent-primary);
+      box-shadow: 0 0 10px var(--glow-color);
+    }
+    /* Make points slightly rectangular for a tech feel */
+    .point { border-radius: 2px; }
+
+    /* ---------- Vibe Room Adjustments ---------- */
+    #vibes .card div {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    /* ---------- Log Entry Display ---------- */
+    #logEntriesContainer {
+        margin-top: 25px;
+        border-top: 1px solid var(--border-color);
+        padding-top: 15px;
+        max-height: 400px; /* Limit height and allow scrolling */
+        overflow-y: auto;
+        text-align: left; /* Align log text left */
+    }
+    #logEntriesContainer h3 {
+        color: var(--accent-secondary);
+        margin-bottom: 15px;
+        text-align: left; /* Align heading left */
+    }
+    .log-entry {
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px dashed var(--border-color); /* Separator */
+    }
+    .log-entry small {
+        display: block;
+        color: var(--text-secondary);
+        margin-bottom: 5px;
+        font-size: 0.85em;
+    }
+    .log-entry p {
+        white-space: pre-wrap; /* Preserve line breaks from textarea */
+        color: var(--text-primary); /* Use primary text color for log */
+        margin: 0; /* Remove default paragraph margin */
+        font-size: 1em; /* Match textarea font size */
+    }
+    #logEntriesContainer p.no-entries { /* Style for placeholder */
+        color: var(--text-secondary);
+        text-align: center;
+        font-style: italic;
+    }
+
+
+    /* ---------- Responsive Layout ---------- */
+    @media (max-width: 768px) {
+      body { padding: 10px; }
+      .container { padding: 15px; }
+      h1 { font-size: 2em; }
+      h2 { font-size: 1.5em; }
+      .tabs { justify-content: space-around; }
+      .tab-button { padding: 8px 12px; font-size: 0.9em; }
+      .card { margin: 15px 0; padding: 20px; }
+      table, th, td { font-size: 0.85em; padding: 8px 5px; }
+      .calendar-grid { gap: 5px; }
+      .calendar-grid div { padding: 8px 4px; font-size: 0.8em; }
+      .points-container { gap: 5px; }
+      .point { width: 20px; height: 20px; }
+      #quote-display { font-size: 1.2em; margin: 20px auto; max-width: 95%; }
+      #logEntriesContainer { max-height: 300px; } /* Adjust height on smaller screens */
+    }
+    @media (max-width: 480px) {
+        h1 { font-size: 1.8em; }
+        .tab-button { padding: 6px 8px; font-size: 0.8em; }
+        th, td { word-break: break-word; } /* Prevent table overflow */
+        button { padding: 8px 12px; font-size: 0.9em; }
+        #quote-display { font-size: 1em; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1><span style="color: var(--accent-secondary);">F</span>ocus<span style="color: var(--accent-secondary);">P</span>al <span style="font-size: 0.6em; color: var(--text-secondary);">Interface v2.1</span></h1>
+
+  <!-- Inspirational Quote Display -->
+  <div id="quote-display">Loading quote...</div>
+
+  <!-- Main Tab Navigation -->
+  <div class="tabs">
+    <button class="tab-button active" data-tab="focus">Focus Matrix</button>
+    <button class="tab-button" data-tab="journal">Log Entry</button>
+    <button class="tab-button" data-tab="vibes">Ambience Control</button>
+    <button class="tab-button" data-tab="scheduler">Scheduler Core</button>
+    <button class="tab-button" data-tab="holiday">Recreation Protocol</button>
+  </div>
+
+  <!-- Focus Session Tab -->
+  <div id="focus" class="tab-content active">
+    <div class="card">
+      <h2>Engage Focus Matrix</h2>
+      <label for="sessionLength">Set Duration (Cycles):</label>
+      <input type="number" id="sessionLength" value="50" min="1">
+      <button id="toggleFocus">Initiate Sequence</button>
+      <br>
+      <progress id="focusProgress" value="0" max="100"></progress>
+      <p>Total focus this cycle: <span id="focusTime">0</span> units</p>
+    </div>
+  </div>
+
+  <!-- Idle Reflection Tab -->
+  <div id="journal" class="tab-content">
+    <div class="card">
+      <h2>Personal Log Entry</h2>
+      <label for="reflection">Record Observations / Data:</label>
+      <textarea id="reflection" rows="7" placeholder="Log data stream... patterns observed... cognitive state..."></textarea>
+      <button id="saveReflection">Commit Log</button>
+
+      <!-- Container for displaying log entries -->
+      <div id="logEntriesContainer">
+        <h3 style="color: var(--accent-secondary); margin-bottom: 15px; text-align: left;">Log History</h3>
+        <!-- Saved log entries will appear here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Vibe Room Tab -->
+  <div id="vibes" class="tab-content">
+    <div class="card">
+      <h2>Ambience Control Deck</h2>
+      <div>
+        <!-- Adjusted Vibe Buttons -->
+        <button onclick="setMode('sunrise')">Sunrise Protocol</button>
+        <button onclick="setMode('chill')">Nebula Chill</button>
+        <button onclick="setMode('dark')">Deep Space (Default)</button>
+      </div>
+       <p style="text-align: center; margin-top: 20px;">Select environmental simulation.</p>
+    </div>
+  </div>
+
+  <!-- Scheduler Tab -->
+  <div id="scheduler" class="tab-content">
+    <!-- Section 1: Timetable Slot Management -->
+    <div class="card">
+      <h2>Chronosync Manager</h2>
+      <label for="slotTime">Time Coordinate (e.g., 04:30):</label>
+      <input type="text" id="slotTime" placeholder="HH:MM">
+      <label for="slotLabel">Directive Label:</label>
+      <input type="text" id="slotLabel" placeholder="e.g., System Boot">
+      <label for="slotType">Protocol Type:</label>
+      <select id="slotType">
+        <option value="fixed">Fixed Protocol</option>
+        <option value="normal">Adaptive Protocol</option>
+      </select>
+      <button onclick="addTimetableSlot()">Add Directive</button>
+      <button onclick="clearTimetable()">Purge Directives</button>
+      <button onclick="printTimetable()">Print Manifest</button>
+      <table id="timetable">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Directive</th>
+            <th>Protocol</th>
+            <th>Sub-Tasks</th>
+            <th>Status</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody><!-- Timetable rows generated by JS --></tbody>
+      </table>
+    </div>
+
+    <!-- Section 2: To-Do Task Assigner for Normal Slots -->
+    <div class="card">
+      <h2>Sub-Task Assignment Unit</h2>
+      <label for="slotSelector">Select Adaptive Protocol Slot:</label>
+      <select id="slotSelector"></select>
+      <label for="newTodo">New Sub-Task:</label>
+      <input type="text" id="newTodo" placeholder="Define sub-task objective...">
+      <button onclick="addTodo()">Assign Task</button>
+      <button onclick="clearTodoList()">Clear All Sub-Tasks</button>
+    </div>
+
+    <!-- Section 3: Weekly Focus Progress Tracking -->
+    <div class="card">
+      <h2>Cycle Focus Analysis</h2>
+      <label for="weeklyFocus">Focus Units This Cycle:</label>
+      <input type="number" id="weeklyFocus" placeholder="Input total focus units">
+      <button onclick="addWeeklyProgress()">Log Cycle Data</button>
+      <table id="progressTable">
+        <thead>
+          <tr>
+            <th>Cycle</th>
+            <th>Focus Units</th>
+          </tr>
+        </thead>
+        <tbody><!-- Progress rows generated by JS --></tbody>
+      </table>
+      <canvas id="progressGraph" width="800" height="250"></canvas> <!-- Increased height slightly -->
+    </div>
+
+    <!-- Section 4: Daily 10-Point Progress Check -->
+    <div class="card">
+      <h2>Daily Performance Calibration (10 Units)</h2>
+      <div class="points-container" id="pointsContainer">
+          <!-- Points generated by JS -->
+      </div>
+      <p style="text-align: center;">Current Calibration: <span id="dailyPoints">0</span>/10 Units</p>
+    </div>
+
+    <!-- Section 5: Overall Calendar with Daily Progress -->
+    <div class="card">
+      <h2>Chronological Data Matrix (Daily Calibration)</h2>
+      <div class="calendar-grid" id="calendarGrid">
+          <!-- Calendar days generated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Holiday Timetable Tab -->
+  <div id="holiday" class="tab-content">
+    <div class="card">
+      <h2>Recreation Protocol Manager</h2>
+      <label for="holidayDay">Select Cycle Segment:</label>
+      <select id="holidayDay">
+        <option value="saturday">Segment Alpha (Sat)</option>
+        <option value="sunday">Segment Beta (Sun)</option>
+      </select>
+      <label for="holidaySlotTime">Time Coordinate:</label>
+      <input type="text" id="holidaySlotTime" placeholder="HH:MM">
+      <label for="holidaySlotLabel">Activity Label:</label>
+      <input type="text" id="holidaySlotLabel" placeholder="e.g., Zero-G Relaxation">
+      <label for="holidaySlotType">Protocol Type:</label>
+      <select id="holidaySlotType">
+        <option value="fixed">Fixed Protocol</option>
+        <option value="normal">Adaptive Protocol</option>
+      </select>
+      <button onclick="addHolidaySlot()">Add Recreation Directive</button>
+      <button onclick="clearHolidayTimetable()">Purge Recreation Protocols</button>
+      <button onclick="printHolidayTimetable()">Print Recreation Manifest</button>
+
+      <h3>Segment Alpha Schedule</h3>
+      <table id="holidayTableSaturday">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Activity</th>
+            <th>Protocol</th>
+            <th>Status</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody><!-- Saturday rows generated by JS --></tbody>
+      </table>
+
+      <h3>Segment Beta Schedule</h3>
+      <table id="holidayTableSunday">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Activity</th>
+            <th>Protocol</th>
+            <th>Status</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody><!-- Sunday rows generated by JS --></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* -------------------- Inspirational Quotes -------------------- */
+  const quotes = [
+    "The universe is under no obligation to make sense to you. - Neil deGrasse Tyson",
+    "Somewhere, something incredible is waiting to be known. - Carl Sagan",
+    "Science is not only a disciple of reason but also one of romance and passion. - Stephen Hawking",
+    "The important thing is not to stop questioning. Curiosity has its own reason for existing. - Albert Einstein",
+    "We are all in the gutter, but some of us are looking at the stars. - Oscar Wilde",
+    "The future belongs to those who believe in the beauty of their dreams. - Eleanor Roosevelt",
+    "Logic will get you from A to B. Imagination will take you everywhere. - Albert Einstein",
+    "Two things are infinite: the universe and human stupidity; and I'm not sure about the universe. - Albert Einstein",
+    "All civilizations become either spacefaring or extinct. - Carl Sagan",
+    "The good thing about science is that it's true whether or not you believe in it. - Neil deGrasse Tyson",
+    "Look up at the stars and not down at your feet. Try to make sense of what you see, and wonder about what makes the universe exist. Be curious. - Stephen Hawking"
+  ];
+
+  function displayRandomQuote() {
+    const quoteDisplay = document.getElementById('quote-display');
+    if (!quoteDisplay) return; // Exit if element not found
+    const randomIndex = Math.floor(Math.random() * quotes.length);
+    quoteDisplay.textContent = `"${quotes[randomIndex]}"`;
+    // Re-trigger animation for new quote
+    quoteDisplay.style.animation = 'none';
+    quoteDisplay.offsetHeight; /* trigger reflow */
+    quoteDisplay.style.animation = null;
+    quoteDisplay.style.animation = 'fadeInQuote 1.5s ease-in-out';
+  }
+
+  // Display initial quote and change it periodically (e.g., every 30 seconds)
+  displayRandomQuote();
+  setInterval(displayRandomQuote, 30000); // Change quote every 30 seconds
+
+
+  /* -------------------- Global Variables for Data -------------------- */
+  let timetable = []; // each slot: { time, label, type, todos: [], done: false }
+  let weeklyProgressData = []; // array of { week, minutes }
+  let weekCounter = 1;
+  let currentPoints = 0;
+  let dailyProgress = {}; // date (YYYY-MM-DD) => points
+  let holidayTimetable = { saturday: [], sunday: [] };
+  let totalFocusTime = 0; // Keep track across sessions
+  let reflections = []; // Array for log entries: { date: ISOString, text: string }
+
+
+  /* -------------------- Local Storage Helpers -------------------- */
+  function saveData() {
+    try {
+      localStorage.setItem('focusPal_timetable', JSON.stringify(timetable));
+      localStorage.setItem('focusPal_weeklyProgress', JSON.stringify(weeklyProgressData));
+      localStorage.setItem('focusPal_dailyPoints', currentPoints);
+      localStorage.setItem('focusPal_dailyProgress', JSON.stringify(dailyProgress));
+      localStorage.setItem('focusPal_holidayTimetable', JSON.stringify(holidayTimetable));
+      localStorage.setItem('focusPal_totalFocus', totalFocusTime);
+      localStorage.setItem('focusPal_weekCounter', weekCounter);
+      localStorage.setItem('focusPal_reflections', JSON.stringify(reflections)); // <<< SAVE REFLECTIONS
+    } catch (e) {
+        console.error("Error saving data to localStorage:", e);
+        alert("Error saving data. LocalStorage might be full or disabled.");
+    }
+  }
+
+  function loadData() {
+    try {
+        const tData = localStorage.getItem('focusPal_timetable');
+        if(tData) { timetable = JSON.parse(tData); }
+
+        const wData = localStorage.getItem('focusPal_weeklyProgress');
+        if(wData) { weeklyProgressData = JSON.parse(wData); }
+
+        const wc = localStorage.getItem('focusPal_weekCounter');
+        if(wc) { weekCounter = parseInt(wc, 10); } else { weekCounter = weeklyProgressData.length > 0 ? Math.max(...weeklyProgressData.map(d => d.week)) + 1 : 1; }
+
+        const dp = localStorage.getItem('focusPal_dailyPoints');
+        if(dp) { currentPoints = parseInt(dp, 10); }
+
+        const dProg = localStorage.getItem('focusPal_dailyProgress');
+        if(dProg) { dailyProgress = JSON.parse(dProg); }
+
+        const hData = localStorage.getItem('focusPal_holidayTimetable');
+        if(hData) { holidayTimetable = JSON.parse(hData); }
+
+        const tfTime = localStorage.getItem('focusPal_totalFocus');
+        if(tfTime) { totalFocusTime = parseInt(tfTime, 10); }
+
+        const rData = localStorage.getItem('focusPal_reflections'); // <<< LOAD REFLECTIONS
+        if (rData) { reflections = JSON.parse(rData); }
+
+    } catch (e) {
+        console.error("Error loading data from localStorage:", e);
+        // Reset data structures on error to prevent issues
+        timetable = [];
+        weeklyProgressData = [];
+        weekCounter = 1;
+        currentPoints = 0;
+        dailyProgress = {};
+        holidayTimetable = { saturday: [], sunday: [] };
+        totalFocusTime = 0;
+        reflections = [];
+    }
+
+    // Initial Renders (call functions that update the UI)
+    renderTimetable();
+    updateSlotSelector();
+    renderWeeklyProgress();
+    drawGraph();
+    renderPoints();
+    renderCalendar();
+    renderHolidayTimetables();
+    // updateHolidaySlotSelector(); // This function doesn't seem to exist, remove or implement if needed
+    renderLogEntries(); // <<< RENDER LOGS ON LOAD
+
+    // Update UI elements that depend directly on loaded values
+    if (focusTimeDisplay) focusTimeDisplay.textContent = totalFocusTime;
+    if (focusProgress) focusProgress.value = (totalFocusTime % 300) * (100 / 300); // Example logic, adjust if needed
+    if (document.getElementById('dailyPoints')) document.getElementById('dailyPoints').textContent = currentPoints;
+  }
+
+  /* -------------------- Tab Navigation -------------------- */
+  const tabButtons = document.querySelectorAll('.tab-button');
+  const tabContents = document.querySelectorAll('.tab-content');
+  tabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const target = button.getAttribute('data-tab');
+      tabButtons.forEach(btn => btn.classList.remove('active'));
+      tabContents.forEach(content => content.classList.remove('active'));
+      button.classList.add('active');
+      const targetContent = document.getElementById(target);
+      if (targetContent) {
+          targetContent.classList.add('active');
+      }
+    });
+  });
+
+  /* -------------------- Focus Session Logic -------------------- */
+  let isFocusing = false;
+  let focusInterval = null;
+  let currentFocusProgress = 0;
+  let sessionDuration = 0;
+  let elapsedSeconds = 0;
+  // totalFocusTime is now global
+
+  const sessionLengthInput = document.getElementById('sessionLength');
+  const toggleFocusBtn = document.getElementById('toggleFocus');
+  const focusProgress = document.getElementById('focusProgress');
+  const focusTimeDisplay = document.getElementById('focusTime');
+
+  if (toggleFocusBtn) {
+      toggleFocusBtn.addEventListener('click', () => {
+        isFocusing = !isFocusing;
+        if (isFocusing) {
+          sessionDuration = parseInt(sessionLengthInput.value, 10) * 60; // Duration in seconds
+          if (isNaN(sessionDuration) || sessionDuration <= 0) {
+              alert("Please set a valid duration.");
+              isFocusing = false;
+              return;
+          }
+          elapsedSeconds = 0; // Reset timer for new session
+          toggleFocusBtn.textContent = "Abort Sequence";
+          toggleFocusBtn.style.borderColor = "#e53e3e"; // Use red border for active/abort state
+          toggleFocusBtn.style.color = "#e53e3e";
+          toggleFocusBtn.style.background = "transparent";
+
+          focusInterval = setInterval(() => {
+            elapsedSeconds++;
+            currentFocusProgress = (elapsedSeconds / sessionDuration) * 100;
+            if (focusProgress) focusProgress.value = currentFocusProgress;
+
+            if (elapsedSeconds >= sessionDuration) {
+              clearInterval(focusInterval);
+              isFocusing = false;
+              toggleFocusBtn.textContent = "Initiate Sequence";
+              toggleFocusBtn.style.borderColor = "var(--accent-primary)"; // Reset style
+              toggleFocusBtn.style.color = "var(--bg-primary)";
+              toggleFocusBtn.style.background = "var(--accent-primary)";
+              totalFocusTime += parseInt(sessionLengthInput.value, 10); // Add completed session time
+              if (focusTimeDisplay) focusTimeDisplay.textContent = totalFocusTime;
+              alert("Focus Sequence Complete!");
+              saveData(); // Save after session completion
+            }
+          }, 1000); // Update every second
+        } else {
+          clearInterval(focusInterval);
+          toggleFocusBtn.textContent = "Initiate Sequence";
+          toggleFocusBtn.style.borderColor = "var(--accent-primary)"; // Reset style
+          toggleFocusBtn.style.color = "var(--bg-primary)";
+          toggleFocusBtn.style.background = "var(--accent-primary)";
+          // Don't add time if aborted, but save current state
+          saveData();
+        }
+      });
+  }
+
+  /* -------------------- Log Entry (Journal) Logic -------------------- */
+  const reflectionTextarea = document.getElementById('reflection');
+  const saveReflectionBtn = document.getElementById('saveReflection');
+
+  function renderLogEntries() {
+      const logContainer = document.getElementById('logEntriesContainer');
+      if (!logContainer) return; // Exit if container not found
+
+      // Clear previous entries, but keep the heading
+      logContainer.innerHTML = '<h3 style="color: var(--accent-secondary); margin-bottom: 15px; text-align: left;">Log History</h3>';
+
+      if (reflections && reflections.length > 0) {
+          // Display newest first by iterating backwards
+          for (let i = reflections.length - 1; i >= 0; i--) {
+              const entry = reflections[i];
+              const entryDiv = document.createElement('div');
+              entryDiv.className = 'log-entry'; // Use class for styling
+
+              const dateElement = document.createElement('small');
+              // Format date for better readability
+              try {
+                  dateElement.textContent = `Logged: ${new Date(entry.date).toLocaleString()}`;
+              } catch (e) {
+                  dateElement.textContent = `Logged: Invalid Date`; // Handle potential invalid date strings
+              }
+
+              const textElement = document.createElement('p');
+              // Use textContent for safety and pre-wrap to preserve line breaks
+              textElement.textContent = entry.text;
+
+              entryDiv.appendChild(dateElement);
+              entryDiv.appendChild(textElement);
+
+              logContainer.appendChild(entryDiv);
+          }
+      } else {
+          // Add a placeholder if no entries exist
+          const noEntriesP = document.createElement('p');
+          noEntriesP.textContent = 'No log entries recorded yet.';
+          noEntriesP.className = 'no-entries'; // Class for styling
+          logContainer.appendChild(noEntriesP);
+      }
+  }
+
+  if (saveReflectionBtn && reflectionTextarea) {
+      saveReflectionBtn.addEventListener('click', () => {
+        const text = reflectionTextarea.value.trim();
+        if (text) {
+          const newEntry = {
+            date: new Date().toISOString(), // Store date as ISO string
+            text: text
+          };
+          reflections.push(newEntry);
+          saveData(); // Save the updated reflections array
+          reflectionTextarea.value = ''; // Clear textarea after saving
+          alert('Log entry committed.');
+          renderLogEntries(); // <<< --- UPDATE THE DISPLAY immediately
+        } else {
+          alert('Cannot commit an empty log entry.');
+        }
+      });
+  }
+
+  /* -------------------- Vibe Room Logic -------------------- */
+  function setMode(mode) {
+    const body = document.body;
+    const container = document.querySelector('.container');
+    if (!body || !container) return; // Exit if elements not found
+
+    // Reset styles first to avoid conflicts
+    body.style.background = '';
+    body.style.color = '';
+    container.style.background = '';
+    container.style.boxShadow = '';
+
+    if (mode === 'sunrise') {
+      body.style.background = "linear-gradient(to bottom right, #2c3e50, #fd746c)"; /* Dark blue to orange/red */
+      body.style.color = "#f0f4f8";
+      container.style.background = "rgba(44, 62, 80, 0.8)";
+      container.style.boxShadow = "0 0 15px rgba(253, 116, 108, 0.5)";
+    } else if (mode === 'chill') {
+      body.style.background = "linear-gradient(to bottom right, #1d2b64, #4e4376)"; /* Deep indigo/purple */
+      body.style.color = "#e2e8f0";
+      container.style.background = "rgba(29, 43, 100, 0.8)";
+      container.style.boxShadow = "0 0 15px rgba(78, 67, 118, 0.5)";
+    } else if (mode === 'dark') { // Default Sci-Fi Dark
+      body.style.background = "var(--bg-primary)";
+      body.style.color = "var(--text-primary)";
+      container.style.background = "rgba(10, 15, 26, 0.8)";
+      container.style.boxShadow = "0 0 15px var(--glow-color)";
+    }
+  }
+
+  /* -------------------- Scheduler - Timetable Management -------------------- */
+  // timetable is global
+
+  function addTimetableSlot() {
+    const timeInput = document.getElementById('slotTime');
+    const labelInput = document.getElementById('slotLabel');
+    const typeSelect = document.getElementById('slotType');
+    if (!timeInput || !labelInput || !typeSelect) return;
+
+    const type = typeSelect.value;
+    const time = timeInput.value.trim();
+    const label = labelInput.value.trim();
+
+    if(time && label) {
+      // Basic time format validation (HH:MM)
+      if (!/^\d{2}:\d{2}$/.test(time)) {
+          alert("Please enter time in HH:MM format (e.g., 09:00).");
+          return;
+      }
+      const slot = { time, label, type, todos: [], done: false };
+      timetable.push(slot);
+      // Sort timetable by time
+      timetable.sort((a, b) => a.time.localeCompare(b.time));
+      renderTimetable();
+      updateSlotSelector();
+      saveData();
+      timeInput.value = ''; // Clear inputs
+      labelInput.value = '';
+    } else {
+        alert("Time Coordinate and Directive Label are required.");
+    }
+  }
+
+  function renderTimetable() {
+    const timetableElement = document.getElementById('timetable');
+    if (!timetableElement) return;
+    const tbody = timetableElement.querySelector('tbody');
+    if (!tbody) return;
+
+    tbody.innerHTML = '';
+    timetable.forEach((slot, index) => {
+      const todoList = (slot.todos && slot.todos.length) ? slot.todos.map(t => `<li>${escapeHtml(t)}</li>`).join('') : '<li>—</li>';
+      const row = document.createElement('tr');
+      row.innerHTML = `<td>${escapeHtml(slot.time)}</td>
+                       <td>${escapeHtml(slot.label)}</td>
+                       <td>${escapeHtml(slot.type)}</td>
+                       <td><ul style="list-style: none; padding-left: 5px; margin: 0;">${todoList}</ul></td>
+                       <td><input type="checkbox" ${slot.done ? 'checked' : ''} onchange="toggleSlotDone(${index}, this.checked)"></td>
+                       <td><button onclick="deleteSlot(${index})">Delete</button></td>`;
+      tbody.appendChild(row);
+    });
+  }
+
+  function toggleSlotDone(index, value) {
+    if (timetable[index]) {
+        timetable[index].done = value;
+        saveData();
+    }
+  }
+
+  function deleteSlot(index) {
+    if (timetable[index] && confirm(`Delete directive "${timetable[index].label}" at ${timetable[index].time}?`)) {
+        timetable.splice(index, 1);
+        renderTimetable();
+        updateSlotSelector();
+        saveData();
+    }
+  }
+
+  function clearTimetable() {
+    if(confirm("Confirm Purge All Directives? This cannot be undone.")) {
+      timetable = [];
+      renderTimetable();
+      updateSlotSelector();
+      saveData();
+    }
+  }
+
+  function printTimetable() {
+    // Basic print - might need more specific print styles for better results
+    window.print();
+  }
+
+  /* -------------------- To-Do Task Assigner -------------------- */
+  function updateSlotSelector() {
+    const selector = document.getElementById('slotSelector');
+    if (!selector) return;
+    selector.innerHTML = '<option value="">-- Select Adaptive Protocol --</option>';
+    timetable.forEach((slot, index) => {
+      if(slot.type === 'normal') {
+        const opt = document.createElement('option');
+        opt.value = index;
+        opt.textContent = `${escapeHtml(slot.time)} - ${escapeHtml(slot.label)}`;
+        selector.appendChild(opt);
+      }
+    });
+  }
+
+  function addTodo() {
+    const selector = document.getElementById('slotSelector');
+    const newTodoInput = document.getElementById('newTodo');
+    if (!selector || !newTodoInput) return;
+
+    const slotIndex = selector.value;
+    const newTodo = newTodoInput.value.trim();
+
+    if(slotIndex !== "" && newTodo) {
+      if (timetable[slotIndex]) {
+          if (!timetable[slotIndex].todos) { // Initialize if undefined
+              timetable[slotIndex].todos = [];
+          }
+          timetable[slotIndex].todos.push(newTodo);
+          renderTimetable();
+          newTodoInput.value = ''; // Clear input
+          saveData();
+      } else {
+          alert("Selected slot not found.");
+      }
+    } else if (slotIndex === "") {
+        alert("Please select an Adaptive Protocol slot first.");
+    } else {
+        alert("Please enter a sub-task objective.");
+    }
+  }
+
+  function clearTodoList() {
+    if(confirm("Confirm Clear All Sub-Tasks from all Adaptive Protocols?")) {
+      timetable.forEach(slot => {
+        if(slot.type === 'normal') slot.todos = [];
+      });
+      renderTimetable();
+      saveData();
+    }
+  }
+
+  /* -------------------- Scheduler - Weekly Focus Progress -------------------- */
+  // weeklyProgressData & weekCounter are global
+
+  function addWeeklyProgress() {
+    const focusInput = document.getElementById('weeklyFocus');
+    if (!focusInput) return;
+    const focus = focusInput.value;
+    const focusNum = parseInt(focus, 10);
+
+    if(focus && !isNaN(focusNum) && focusNum > 0) {
+      weeklyProgressData.push({ week: weekCounter, minutes: focusNum });
+      weekCounter++; // Increment for the *next* entry
+      renderWeeklyProgress();
+      drawGraph();
+      focusInput.value = '';
+      saveData();
+    } else {
+        alert("Please enter a valid positive number of focus units for the cycle.");
+    }
+  }
+
+  function renderWeeklyProgress() {
+    const progressTable = document.getElementById('progressTable');
+    if (!progressTable) return;
+    const tbody = progressTable.querySelector('tbody');
+    if (!tbody) return;
+
+    tbody.innerHTML = '';
+    // Sort data by week just in case it's out of order
+    weeklyProgressData.sort((a, b) => a.week - b.week);
+    weeklyProgressData.forEach(entry => {
+      const row = document.createElement('tr');
+      row.innerHTML = `<td>Cycle ${entry.week}</td><td>${entry.minutes}</td>`;
+      tbody.appendChild(row);
+    });
+  }
+
+  function drawGraph() {
+    const canvas = document.getElementById('progressGraph');
+    if (!canvas || !canvas.getContext) return; // Check canvas exists and is supported
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (weeklyProgressData.length === 0) return; // Don't draw if no data
+
+    const barPadding = 15;
+    const availableWidth = canvas.width - barPadding * 2;
+    const barWidth = Math.max(10, (availableWidth / weeklyProgressData.length) * 0.6); // Dynamic width, min 10px
+    const gap = (availableWidth - barWidth * weeklyProgressData.length) / (weeklyProgressData.length + 1);
+
+    const maxValue = Math.max(...weeklyProgressData.map(d => d.minutes), 1); // Avoid division by zero
+    const scale = (canvas.height - 40) / maxValue; // Leave space for labels
+
+    ctx.font = "10px 'Share Tech Mono', monospace";
+    ctx.fillStyle = "var(--text-secondary)";
+    ctx.textAlign = "left"; // Set default alignment
+    ctx.fillText("Focus Units", 5, 15);
+    ctx.fillText("Cycle", canvas.width - 40, canvas.height - 5);
+
+    weeklyProgressData.forEach((entry, index) => {
+      const x = barPadding + gap + index * (barWidth + gap);
+      const barHeight = entry.minutes * scale;
+      const y = canvas.height - barHeight - 20; // Position from bottom, leave space for label
+
+      // Draw Bar
+      ctx.fillStyle = "var(--accent-primary)"; // Use accent color for bars
+      ctx.fillRect(x, y, barWidth, barHeight);
+      ctx.strokeStyle = "var(--accent-secondary)"; // Add a border
+      ctx.strokeRect(x, y, barWidth, barHeight);
+
+
+      // Draw Label (Week Number)
+      ctx.fillStyle = "var(--text-secondary)";
+      ctx.textAlign = "center";
+      ctx.fillText("C" + entry.week, x + barWidth / 2, canvas.height - 5);
+
+      // Draw Value on top (optional)
+      ctx.fillStyle = "var(--accent-primary)";
+      ctx.fillText(entry.minutes, x + barWidth / 2, y - 5);
+    });
+     ctx.textAlign = "left"; // Reset alignment
+  }
+
+  /* -------------------- Scheduler - Daily 10-Point Progress Check -------------------- */
+  const maxPoints = 10;
+  // currentPoints is global
+
+  function renderPoints() {
+    const container = document.getElementById('pointsContainer');
+    const dailyPointsDisplay = document.getElementById('dailyPoints');
+    if (!container || !dailyPointsDisplay) return;
+
+    container.innerHTML = '';
+    dailyPointsDisplay.textContent = currentPoints; // Update display text
+
+    for(let i = 1; i <= maxPoints; i++) {
+      const pointDiv = document.createElement('div');
+      pointDiv.className = 'point' + (i <= currentPoints ? ' active' : '');
+      pointDiv.title = `Set calibration to ${i}`; // Tooltip
+      pointDiv.addEventListener('click', () => {
+        currentPoints = (currentPoints === i) ? i - 1 : i; // Click again to deselect last point
+        renderPoints(); // Re-render to update active states and display text
+        updateCalendarProgress();
+        saveData();
+      });
+      container.appendChild(pointDiv);
+    }
+  }
+
+  /* -------------------- Scheduler - Calendar with Daily Progress -------------------- */
+  // dailyProgress is global
+
+  function updateCalendarProgress() {
+    const today = new Date().toISOString().split("T")[0];
+    dailyProgress[today] = currentPoints;
+    renderCalendar(); // Re-render calendar to show today's update
+    // No need to save here, it's saved when points are clicked
+  }
+
+  function renderCalendar() {
+    const grid = document.getElementById('calendarGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth(); // 0-indexed
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    const firstDayOfMonth = (new Date(currentYear, currentMonth, 1).getDay() + 6) % 7; // Adjust to make Monday=0
+    const todayDateStr = today.toISOString().split("T")[0];
+
+    // Add day headers (Mon-Sun)
+    const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+     daysOfWeek.forEach(day => {
+        const dayHeader = document.createElement('div');
+        dayHeader.style.fontWeight = 'bold';
+        dayHeader.style.color = 'var(--accent-secondary)';
+        dayHeader.style.border = 'none';
+        dayHeader.style.background = 'transparent';
+        dayHeader.style.padding = '5px'; // Add some padding
+        dayHeader.textContent = day;
+        grid.appendChild(dayHeader);
+     });
+
+
+    // Add empty cells for days before the 1st of the month
+    for (let i = 0; i < firstDayOfMonth; i++) {
+        const emptyCell = document.createElement('div');
+        emptyCell.style.border = 'none'; // Make empty cells less prominent
+        emptyCell.style.background = 'transparent';
+        grid.appendChild(emptyCell);
+    }
+
+    // Add cells for each day of the month
+    for(let d = 1; d <= daysInMonth; d++) {
+      const dayBox = document.createElement('div');
+      const monthStr = (currentMonth + 1).toString().padStart(2, '0');
+      const dayStr = d.toString().padStart(2, '0');
+      const dateStr = `${currentYear}-${monthStr}-${dayStr}`;
+
+      const progressPoints = dailyProgress[dateStr] || 0;
+      dayBox.innerHTML = `<strong>${d}</strong><span>${progressPoints}/10</span>`;
+      dayBox.title = `Date: ${dateStr}, Progress: ${progressPoints}/10`; // Tooltip
+
+      // Style based on progress
+      if (progressPoints > 0) {
+          const intensity = progressPoints / 10; // 0.1 to 1.0
+          dayBox.style.background = `rgba(0, 255, 255, ${intensity * 0.3})`; // Faint glow based on points
+          dayBox.style.borderColor = `rgba(0, 255, 255, ${intensity * 0.5})`;
+          if (progressPoints >= 8) {
+              dayBox.style.boxShadow = `0 0 5px rgba(0, 255, 255, ${intensity * 0.6})`;
+          }
+      }
+       // Highlight today
+      if (dateStr === todayDateStr) {
+          dayBox.style.borderColor = 'var(--accent-secondary)';
+          dayBox.style.borderWidth = '2px';
+      }
+
+      grid.appendChild(dayBox);
+    }
+  }
+
+  /* -------------------- Holiday Timetable -------------------- */
+  // holidayTimetable is global
+
+  function addHolidaySlot() {
+    const daySelect = document.getElementById('holidayDay');
+    const timeInput = document.getElementById('holidaySlotTime');
+    const labelInput = document.getElementById('holidaySlotLabel');
+    const typeSelect = document.getElementById('holidaySlotType');
+    if (!daySelect || !timeInput || !labelInput || !typeSelect) return;
+
+    const day = daySelect.value;
+    const time = timeInput.value.trim();
+    const label = labelInput.value.trim();
+    const type = typeSelect.value;
+
+    if(time && label) {
+       if (!/^\d{2}:\d{2}$/.test(time)) {
+          alert("Please enter time in HH:MM format (e.g., 10:00).");
+          return;
+      }
+      if (!holidayTimetable[day]) holidayTimetable[day] = []; // Ensure day array exists
+
+      holidayTimetable[day].push({ time, label, type, done: false });
+      // Sort the specific day's timetable
+      holidayTimetable[day].sort((a, b) => a.time.localeCompare(b.time));
+      renderHolidayTimetables();
+      saveData();
+      timeInput.value = '';
+      labelInput.value = '';
+    } else {
+        alert("Time Coordinate and Activity Label are required.");
+    }
+  }
+
+  function renderHolidayTimetables() {
+    renderHolidayTable('saturday', 'holidayTableSaturday');
+    renderHolidayTable('sunday', 'holidayTableSunday');
+  }
+
+  function renderHolidayTable(day, tableId) {
+    const tableElement = document.getElementById(tableId);
+    if (!tableElement) return;
+    const tbody = tableElement.querySelector('tbody');
+    if (!tbody) return;
+
+    tbody.innerHTML = '';
+    if (holidayTimetable[day]) { // Check if the day array exists
+        holidayTimetable[day].forEach((slot, index) => {
+          const row = document.createElement('tr');
+          row.innerHTML = `<td>${escapeHtml(slot.time)}</td>
+                           <td>${escapeHtml(slot.label)}</td>
+                           <td>${escapeHtml(slot.type)}</td>
+                           <td><input type="checkbox" ${slot.done ? 'checked' : ''} onchange="toggleHolidayDone('${day}', ${index}, this.checked)"></td>
+                           <td><button onclick="deleteHolidaySlot('${day}', ${index})">Delete</button></td>`;
+          tbody.appendChild(row);
+        });
+    }
+  }
+
+  function toggleHolidayDone(day, index, value) {
+    if (holidayTimetable[day] && holidayTimetable[day][index]) {
+        holidayTimetable[day][index].done = value;
+        saveData();
+    }
+  }
+
+  function deleteHolidaySlot(day, index) {
+     if (holidayTimetable[day] && holidayTimetable[day][index] && confirm(`Delete recreation directive "${holidayTimetable[day][index].label}" for ${day}?`)) {
+        holidayTimetable[day].splice(index, 1);
+        renderHolidayTimetables();
+        saveData();
+     }
+  }
+
+  function clearHolidayTimetable() {
+    if(confirm("Confirm Purge All Recreation Protocols? This cannot be undone.")) {
+      holidayTimetable = { saturday: [], sunday: [] };
+      renderHolidayTimetables();
+      saveData();
+    }
+  }
+
+  function printHolidayTimetable() {
+    // Basic print
+    window.print();
+  }
+
+  /* -------------------- Utility Functions -------------------- */
+  function escapeHtml(unsafe) {
+      if (typeof unsafe !== 'string') return unsafe; // Return non-strings as is
+      return unsafe
+           .replace(/&/g, "&amp;")
+           .replace(/</g, "&lt;")
+           .replace(/>/g, "&gt;")
+           .replace(/"/g, "&quot;")
+           .replace(/'/g, "&#039;");
+   }
+
+  /* -------------------- On Load: Load Data & Initial Renders -------------------- */
+  window.onload = function() {
+    loadData(); // Load all saved data first (this now includes rendering logs)
+    // Initial renders are now called within loadData() after data is parsed.
+    setMode('dark'); // Set default vibe after loading
+  }
+</script>
+</body>
+</html>
