@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <!-- Add viewport meta tag for responsive design -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FocusPal Interface v2.1</title>
   <!-- Sci-Fi Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -33,6 +35,10 @@
       padding: 20px;
       transition: background 0.5s ease, color 0.5s ease;
       line-height: 1.6;
+      /* Mobile Optimization: Prevent text size adjustment on orientation change */
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+      text-size-adjust: 100%;
     }
 
     .container {
@@ -43,6 +49,9 @@
       padding: 20px;
       background: rgba(10, 15, 26, 0.8); /* Slightly transparent background */
       backdrop-filter: blur(5px); /* Frosted glass effect */
+      /* Mobile Optimization: Ensure container doesn't exceed viewport width */
+      width: 100%;
+      overflow-x: hidden; /* Prevent accidental horizontal scroll on container */
     }
 
     h1, h2, h3 {
@@ -85,7 +94,7 @@
       display: flex;
       justify-content: center;
       margin-bottom: 30px;
-      flex-wrap: wrap;
+      flex-wrap: wrap; /* Allow tabs to wrap */
       gap: 10px;
       border-bottom: 1px solid var(--border-color);
       padding-bottom: 15px;
@@ -102,6 +111,7 @@
       transition: background 0.3s, color 0.3s, box-shadow 0.3s;
       text-transform: uppercase;
       letter-spacing: 1px;
+      white-space: nowrap; /* Prevent button text wrapping */
     }
 
     .tab-button:hover {
@@ -275,12 +285,18 @@
       margin-top: 20px;
       font-size: 0.95em;
       border: 1px solid var(--border-color);
+      /* Mobile: Ensure table doesn't force container wider initially */
+      table-layout: fixed; /* Helps prevent content from stretching columns too much */
+      word-wrap: break-word; /* Allow long words to break */
     }
     th, td {
       padding: 12px 10px;
       border: 1px solid var(--border-color);
       text-align: left;
       vertical-align: middle;
+      /* Mobile: Allow breaking within cells */
+       word-break: break-word;
+       hyphens: auto; /* Optional: Add hyphens */
     }
     th {
       background: rgba(0, 255, 255, 0.1); /* Faint cyan header */
@@ -309,6 +325,27 @@
         font-size: 0.8em;
     }
 
+    /* Mobile: Wrapper for scrollable tables (Alternative approach, not actively used by default) */
+    .table-wrapper {
+        overflow-x: auto;
+        margin-top: 20px; /* Keep margin consistent with original table */
+        border: 1px solid var(--border-color); /* Add border to wrapper */
+        margin-bottom: 15px; /* Add some space below */
+        -webkit-overflow-scrolling: touch; /* Smoother scrolling on iOS */
+    }
+    .table-wrapper table {
+        margin-top: 0; /* Remove margin from table inside wrapper */
+        border: none; /* Remove border from table inside wrapper */
+        width: auto; /* Allow table to naturally size based on content */
+        min-width: 600px; /* Example: Set a min-width to force scrolling */
+        table-layout: auto; /* Let table size itself */
+        white-space: nowrap; /* Prevent text wrapping inside cells when scrolling */
+    }
+    .table-wrapper th, .table-wrapper td {
+        white-space: nowrap; /* Ensure headers don't wrap either */
+    }
+
+
     /* ---------- Calendar & Graph ---------- */
     .calendar-grid {
       display: grid;
@@ -323,6 +360,10 @@
       text-align: center;
       font-size: 0.9em;
       transition: background 0.3s, box-shadow 0.3s;
+      min-height: 50px; /* Give cells some minimum height */
+      display: flex; /* Use flex for better alignment */
+      flex-direction: column;
+      justify-content: center;
     }
     .calendar-grid div strong {
         display: block;
@@ -330,10 +371,31 @@
         color: var(--accent-primary);
         margin-bottom: 5px;
     }
+     .calendar-grid div span { /* Style the points display */
+        font-size: 0.8em;
+        color: var(--text-secondary);
+    }
     .calendar-grid div:hover {
         background: var(--bg-secondary);
         box-shadow: 0 0 8px var(--glow-color);
     }
+    /* Calendar Header */
+    .calendar-header {
+        font-weight: bold;
+        color: var(--accent-secondary);
+        border: none !important; /* Override border */
+        background: transparent !important; /* Override background */
+        padding: 5px !important; /* Adjust padding */
+        min-height: auto !important; /* Override min-height */
+        font-size: 0.8em !important; /* Adjust size */
+    }
+    /* Calendar Empty Cell */
+    .calendar-empty {
+        border: none !important;
+        background: transparent !important;
+        min-height: auto !important;
+    }
+
 
     canvas {
       max-width: 100%;
@@ -341,6 +403,7 @@
       margin: 25px auto;
       border: 1px solid var(--border-color);
       background: rgba(10, 15, 26, 0.5);
+      height: auto; /* Allow canvas height to adjust */
     }
 
     /* ---------- To-Do List Styles (Integrated into table now) ---------- */
@@ -350,6 +413,7 @@
     .points-container {
       display: flex;
       justify-content: center;
+      flex-wrap: wrap; /* Allow points to wrap on very small screens */
       gap: 8px;
       margin-top: 15px;
       margin-bottom: 15px;
@@ -361,6 +425,7 @@
       cursor: pointer;
       transition: background 0.3s, box-shadow 0.3s;
       position: relative; /* For potential pseudo-elements */
+      border-radius: 2px; /* Make points slightly rectangular */
     }
     .point:hover {
         box-shadow: 0 0 8px var(--glow-color);
@@ -369,14 +434,14 @@
       background: var(--accent-primary);
       box-shadow: 0 0 10px var(--glow-color);
     }
-    /* Make points slightly rectangular for a tech feel */
-    .point { border-radius: 2px; }
+
 
     /* ---------- Vibe Room Adjustments ---------- */
     #vibes .card div {
         display: flex;
         justify-content: center;
         gap: 15px;
+        flex-wrap: wrap; /* Allow vibe buttons to wrap */
     }
 
     /* ---------- Log Entry Display ---------- */
@@ -409,6 +474,7 @@
         color: var(--text-primary); /* Use primary text color for log */
         margin: 0; /* Remove default paragraph margin */
         font-size: 1em; /* Match textarea font size */
+        word-wrap: break-word; /* Ensure long words wrap */
     }
     #logEntriesContainer p.no-entries { /* Style for placeholder */
         color: var(--text-secondary);
@@ -426,20 +492,96 @@
       .tabs { justify-content: space-around; }
       .tab-button { padding: 8px 12px; font-size: 0.9em; }
       .card { margin: 15px 0; padding: 20px; }
-      table, th, td { font-size: 0.85em; padding: 8px 5px; }
       .calendar-grid { gap: 5px; }
-      .calendar-grid div { padding: 8px 4px; font-size: 0.8em; }
+      .calendar-grid div { padding: 8px 4px; font-size: 0.8em; min-height: 40px; }
       .points-container { gap: 5px; }
       .point { width: 20px; height: 20px; }
       #quote-display { font-size: 1.2em; margin: 20px auto; max-width: 95%; }
       #logEntriesContainer { max-height: 300px; } /* Adjust height on smaller screens */
+
+      /* Mobile Adjustments: Apply table scroll styles directly to tables within cards */
+      .card table {
+          display: block; /* Needed for overflow-x */
+          width: 100%; /* Allow table to take card width */
+          overflow-x: auto; /* Enable horizontal scroll */
+          white-space: nowrap; /* Prevent cell content wrapping */
+          -webkit-overflow-scrolling: touch; /* Smoother scrolling on iOS */
+          border: 1px solid var(--border-color); /* Add border back as wrapper isn't used */
+          margin-bottom: 15px; /* Add space below scrollable table */
+          table-layout: auto; /* Let table size itself */
+      }
+       /* Adjust cell padding/font for 768px */
+       .card th, .card td {
+           padding: 8px 10px; /* Slightly more padding than 480px */
+           font-size: 0.85em;
+           white-space: nowrap; /* Keep nowrap for scrolling */
+           /* Ensure word-break doesn't interfere with nowrap */
+           word-break: normal;
+           hyphens: none;
+       }
+       /* Ensure table inside scrollable container doesn't have extra margin/border */
+       .card table {
+           margin-top: 20px; /* Keep original top margin */
+       }
     }
+
     @media (max-width: 480px) {
-        h1 { font-size: 1.8em; }
-        .tab-button { padding: 6px 8px; font-size: 0.8em; }
-        th, td { word-break: break-word; } /* Prevent table overflow */
-        button { padding: 8px 12px; font-size: 0.9em; }
-        #quote-display { font-size: 1em; }
+        body { padding: 5px; } /* Mobile Adjustments: Less padding */
+        .container { padding: 10px; } /* Mobile Adjustments: Less padding */
+        h1 { font-size: 1.6em; } /* Mobile Adjustments: Smaller heading */
+        h2 { font-size: 1.3em; } /* Mobile Adjustments: Smaller heading */
+        h3 { font-size: 1.1em; } /* Mobile Adjustments: Smaller heading */
+        .tab-button { padding: 8px 10px; font-size: 0.75em; } /* Mobile Adjustments: Smaller tabs */
+        .tabs { gap: 5px; } /* Mobile Adjustments: Less gap */
+        .card { padding: 15px; margin: 10px 0; } /* Mobile Adjustments: Less padding/margin */
+
+        /* Mobile Adjustments: Further reduce table cell padding/font */
+        .card th, .card td {
+            padding: 6px 5px;
+            font-size: 0.75em;
+            /* white-space: nowrap; already set in 768px */
+        }
+
+        button { padding: 9px 15px; font-size: 0.85em; } /* Mobile Adjustments: Slightly smaller buttons */
+        td button { padding: 4px 8px; font-size: 0.7em; } /* Mobile Adjustments: Even smaller buttons in tables */
+
+        /* Mobile Adjustments: Stack Vibe buttons */
+        #vibes .card div {
+            flex-direction: column;
+            gap: 10px;
+            align-items: stretch; /* Make buttons fill width */
+        }
+        #vibes .card div button {
+            width: 100%;
+            margin: 0; /* Remove horizontal margins */
+        }
+
+        .calendar-grid { gap: 3px; } /* Mobile Adjustments: Tighter grid */
+        .calendar-grid div { padding: 5px 2px; font-size: 0.7em; min-height: 35px; } /* Mobile Adjustments: Smaller cells */
+        .calendar-grid div strong { font-size: 1em; margin-bottom: 2px; }
+        .calendar-grid div span { font-size: 0.7em; }
+        .calendar-header { font-size: 0.7em !important; padding: 3px !important; }
+
+        .points-container { gap: 4px; } /* Mobile Adjustments: Tighter points */
+        .point { width: 18px; height: 18px; border-width: 1px; } /* Mobile Adjustments: Smaller points */
+
+        #quote-display { font-size: 0.9em; min-height: 40px; } /* Mobile Adjustments: Smaller quote */
+
+        /* Mobile Adjustments: Form element spacing */
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select {
+            margin-bottom: 12px;
+            padding: 10px;
+            font-size: 0.9em;
+        }
+        label { font-size: 0.8em; }
+
+        /* Mobile Adjustments: Log entry text size */
+        .log-entry p { font-size: 0.9em; }
+        .log-entry small { font-size: 0.75em; }
+        #logEntriesContainer { max-height: 250px; }
     }
   </style>
 </head>
@@ -740,7 +882,7 @@
     renderWeeklyProgress();
     drawGraph();
     renderPoints();
-    renderCalendar();
+    renderCalendar(); // <<< JS CHANGE APPLIED HERE
     renderHolidayTimetables();
     // updateHolidaySlotSelector(); // This function doesn't seem to exist, remove or implement if needed
     renderLogEntries(); // <<< RENDER LOGS ON LOAD
@@ -1173,6 +1315,7 @@
     // No need to save here, it's saved when points are clicked
   }
 
+  // --- MODIFIED renderCalendar function ---
   function renderCalendar() {
     const grid = document.getElementById('calendarGrid');
     if (!grid) return;
@@ -1188,11 +1331,8 @@
     const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
      daysOfWeek.forEach(day => {
         const dayHeader = document.createElement('div');
-        dayHeader.style.fontWeight = 'bold';
-        dayHeader.style.color = 'var(--accent-secondary)';
-        dayHeader.style.border = 'none';
-        dayHeader.style.background = 'transparent';
-        dayHeader.style.padding = '5px'; // Add some padding
+        // Add class for styling
+        dayHeader.className = 'calendar-header'; // <<< ADDED CLASS
         dayHeader.textContent = day;
         grid.appendChild(dayHeader);
      });
@@ -1201,8 +1341,8 @@
     // Add empty cells for days before the 1st of the month
     for (let i = 0; i < firstDayOfMonth; i++) {
         const emptyCell = document.createElement('div');
-        emptyCell.style.border = 'none'; // Make empty cells less prominent
-        emptyCell.style.background = 'transparent';
+        // Add class for styling
+        emptyCell.className = 'calendar-empty'; // <<< ADDED CLASS
         grid.appendChild(emptyCell);
     }
 
@@ -1214,6 +1354,7 @@
       const dateStr = `${currentYear}-${monthStr}-${dayStr}`;
 
       const progressPoints = dailyProgress[dateStr] || 0;
+      // Use innerHTML to include the span for points
       dayBox.innerHTML = `<strong>${d}</strong><span>${progressPoints}/10</span>`;
       dayBox.title = `Date: ${dateStr}, Progress: ${progressPoints}/10`; // Tooltip
 
@@ -1230,11 +1371,14 @@
       if (dateStr === todayDateStr) {
           dayBox.style.borderColor = 'var(--accent-secondary)';
           dayBox.style.borderWidth = '2px';
+          // Optional: Add a specific class for today
+          // dayBox.classList.add('today');
       }
 
       grid.appendChild(dayBox);
     }
   }
+  // --- END MODIFIED renderCalendar function ---
 
   /* -------------------- Holiday Timetable -------------------- */
   // holidayTimetable is global
